@@ -1,0 +1,26 @@
+{
+  "name": "yanniang",
+  "version": "0.1.0",
+  "private": true,
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "test": "vitest",
+    "cf-typegen": "wrangler types"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.5.27",
+    "@cloudflare/workers-types": "^4.20241112.0",
+    "@types/bun": "latest",
+    "wrangler": "^3.86.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "hono": "^4.6.9"
+  }
+}
