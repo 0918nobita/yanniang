@@ -1,15 +1,19 @@
-# yanniang
+# 言娘
 
-To install dependencies:
+yánniang
+
+小規模言語交流グループのための共同言語学習アプリ
+
+Cloudflare Workers を用いてデプロイすることを想定して開発しています。
+
+## 依存パッケージのインストール
 
 ```bash
 bun install
 ```
 
-To run:
+## 開発用サーバの起動
 
 ```bash
-bun run index.ts
+bun run dev
 ```
-
-This project was created using `bun init` in bun v1.1.32. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
