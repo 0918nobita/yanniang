@@ -11,42 +11,22 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { Hono } from 'hono';
-import { CookieStore, type Session, sessionMiddleware } from 'hono-sessions';
-import { prettyJSON } from 'hono/pretty-json';
+import { zValidator } from '@hono/zod-validator';
+import { Hono, type Context, type MiddlewareHandler } from 'hono';
+import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
+import { z } from 'zod';
 
-type SessionDataTypes = {
-    userId: string;
-};
+type User = Readonly<{
+    name: string;
+}>;
 
 const app = new Hono<{
-    Variables: { session: Session<SessionDataTypes> };
     Bindings: Env;
+    Variables: { user: User };
 }>();
 
-const store = new CookieStore();
-
-app.use('*', async (c, next) =>
-    sessionMiddleware({
-        store,
-        encryptionKey: c.env.SESSION_ENCRYPTION_KEY,
-        expireAfterSeconds: 900,
-        cookieOptions: {
-            sameSite: 'Lax',
-            path: '/',
-            httpOnly: true,
-        },
-    })(c, next),
-);
-
-app.use(prettyJSON());
-
 app.get('/', (c) => {
-    console.log(`secret: ${c.env.SESSION_ENCRYPTION_KEY}`);
-    console.log(`cookie: ${JSON.stringify(c.get('session'))}`);
-
-    const session = c.get('session');
-    const userId = session.get('userId');
+    const userId = null as string | null;
 
     return c.html(
         <html lang="ja">
@@ -68,18 +48,97 @@ app.get('/', (c) => {
     );
 });
 
-app.get('/login', (c) => {
-    const session = c.get('session');
+const authenticateUser = async (
+    username: string,
+    password: string,
+): Promise<User | null> => {
+    if (username === 'username' && password === 'password') {
+        return { name: 'username' };
+    }
 
-    session.set('userId', '0918nobita');
+    return null;
+};
 
-    return c.redirect('/');
+app.post(
+    '/login',
+    zValidator(
+        'json',
+        z.object({ username: z.string(), password: z.string() }),
+    ),
+    async (c) => {
+        const { username, password } = c.req.valid('json');
+        const user = await authenticateUser(username, password);
+        if (user === null) {
+            return c.json({ error: '認証に失敗しました' }, 401);
+        }
+
+        const sessionId = crypto.randomUUID();
+
+        await c.env.SESSIONS.put(sessionId, username, {
+            expirationTtl: 60 * 60 * 24, // 24 hours
+        });
+
+        setCookie(c, 'session', sessionId, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Lax',
+            maxAge: 60 * 60 * 24, // 24 hours
+        });
+
+        return c.json({ message: 'ログイン成功' });
+    },
+);
+
+const getSessionUser = async (
+    c: Context<{
+        Bindings: { SESSIONS: KVNamespace };
+        Variables: { user: User };
+    }>,
+): Promise<User | null> => {
+    const sessionId = getCookie(c, 'session');
+    if (sessionId === undefined || sessionId === '') return null;
+
+    const username = await c.env.SESSIONS.get(sessionId);
+    return username === null ? null : { name: username };
+};
+
+const authMiddleware: MiddlewareHandler<{
+    Bindings: { SESSIONS: KVNamespace };
+    Variables: { user: User };
+}> = async (c, next) => {
+    const user = await getSessionUser(c);
+
+    if (user === null) {
+        return c.json({ error: '認証が必要です' }, 401);
+    }
+
+    c.set('user', user);
+
+    await next();
+};
+
+app.get('/mypage', authMiddleware, (c) => {
+    const user = c.get('user');
+
+    return c.html(
+        <html lang="ja">
+            <body>
+                <p>{user.name} さんのマイページ</p>
+            </body>
+        </html>,
+    );
 });
 
-app.get('logout', (c) => {
-    c.get('session').deleteSession();
+app.post('/logout', async (c) => {
+    const sessionId = getCookie(c, 'session');
 
-    return c.redirect('/');
+    if (sessionId !== undefined) {
+        await c.env.SESSIONS.delete(sessionId);
+    }
+
+    deleteCookie(c, 'session');
+
+    return c.json({ message: 'ログアウトしました' });
 });
 
 export default app;
