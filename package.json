@@ -2,19 +2,18 @@
   "name": "yanniang",
   "version": "0.1.0",
   "private": true,
-  "module": "index.ts",
   "type": "module",
   "scripts": {
-    "deploy": "wrangler deploy",
-    "dev": "wrangler dev",
-    "start": "wrangler dev",
-    "test": "vitest",
-    "cf-typegen": "wrangler types"
+    "build": "vite build",
+    "cf-typegen": "wrangler types --env-interface CFWorkersEnv",
+    "deploy": "wrangler pages deploy",
+    "dev": "vite dev"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@cloudflare/vitest-pool-workers": "^0.5.27",
     "@cloudflare/workers-types": "^4.20241112.0",
+    "@hono/vite-build": "^1.1.0",
+    "@hono/vite-dev-server": "^0.17.0",
     "@types/bun": "latest",
     "wrangler": "^3.86.1"
   },
@@ -24,6 +23,8 @@
   "dependencies": {
     "@hono/zod-validator": "^0.4.1",
     "hono": "^4.6.9",
+    "honox": "^0.1.26",
+    "vite": "^5.4.11",
     "zod": "^3.23.8"
   }
 }

@@ -3,10 +3,9 @@ import { Hono } from 'hono';
 import { setCookie } from 'hono/cookie';
 import { z } from 'zod';
 
-import type { HonoEnv } from '../env';
 import type { User } from '../user';
 
-const app = new Hono<HonoEnv>();
+const app = new Hono<{ Bindings: CFWorkersEnv }>();
 
 const authenticateUser = async (
     username: string,
