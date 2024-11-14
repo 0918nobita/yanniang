@@ -1,9 +1,7 @@
 import { Hono } from 'hono';
 import { deleteCookie, getCookie } from 'hono/cookie';
 
-import type { HonoEnv } from '../env';
-
-const app = new Hono<HonoEnv>();
+const app = new Hono<{ Bindings: CFWorkersEnv }>();
 
 app.post('/', async (c) => {
     const sessionId = getCookie(c, 'session');
