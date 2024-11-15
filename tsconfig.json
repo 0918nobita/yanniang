@@ -1,17 +1,20 @@
 {
   "compilerOptions": {
     "incremental": true,
-    "lib": ["es2021"],
-    "target": "es2021",
-    "module": "es2022",
-    "moduleDetection": "force",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "target": "ES2022",
+    "module": "ESNext",
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
-    "types": ["@cloudflare/workers-types/2023-07-01"],
+    "types": [
+      "@cloudflare/workers-types/2023-07-01",
+      "@remix-run/cloudflare",
+      "vite/client"
+    ],
     "allowJs": true,
     "checkJs": true,
     "moduleResolution": "bundler",
     "isolatedModules": true,
+    "esModuleInterop": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
     "strict": true,
@@ -19,8 +22,16 @@
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noPropertyAccessFromIndexSignature": false
+    "paths": {
+      "~/*": ["./app/*"]
+    }
   },
-  "exclude": ["test"],
-  "include": ["worker-configuration.d.ts", "app/**/*.tsx", "app/**/*.ts"]
+  "include": [
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "load-context.ts",
+    "tailwind.config.ts",
+    "vite.config.ts",
+    "worker-configuration.d.ts"
+  ]
 }

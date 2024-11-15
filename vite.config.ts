@@ -1,8 +1,21 @@
-import build from '@hono/vite-build/cloudflare-pages';
-import adapter from '@hono/vite-dev-server/cloudflare';
-import honox from 'honox/vite';
+import {
+    vitePlugin as remix,
+    cloudflareDevProxyVitePlugin as remixCloudflareDevProxy,
+} from '@remix-run/dev';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-    plugins: [honox({ devServer: { adapter } }), build()],
+    clearScreen: false,
+    plugins: [
+        remixCloudflareDevProxy(),
+        remix({
+            future: {
+                v3_fetcherPersist: true,
+                v3_lazyRouteDiscovery: true,
+                v3_relativeSplatPath: true,
+                v3_singleFetch: true,
+                v3_throwAbortReason: true,
+            },
+        }),
+    ],
 });
