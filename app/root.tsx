@@ -2,7 +2,6 @@ import type { LinksFunction } from '@remix-run/cloudflare';
 import {
     isRouteErrorResponse,
     Links,
-    LiveReload,
     Meta,
     Outlet,
     Scripts,
@@ -10,8 +9,9 @@ import {
     useRouteError,
 } from '@remix-run/react';
 
-import { RootLayout } from './components/RootLayout';
-import tailwind from './tailwind.css?url';
+import { Toaster } from '~/components/ui/sonner';
+import { RootLayout } from '~/components/RootLayout';
+import tailwind from '~/tailwind.css?url';
 
 export const links: LinksFunction = () => [
     { rel: 'stylesheet', href: tailwind },
@@ -31,9 +31,9 @@ function Document({ children }: { children: React.ReactNode }) {
             </head>
             <body>
                 <RootLayout>{children}</RootLayout>
+                <Toaster position="bottom-left" />
                 <ScrollRestoration />
                 <Scripts />
-                <LiveReload />
             </body>
         </html>
     );

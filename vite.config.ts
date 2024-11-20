@@ -3,10 +3,12 @@ import {
     cloudflareDevProxyVitePlugin as remixCloudflareDevProxy,
 } from '@remix-run/dev';
 import { defineConfig } from 'vite';
+import tsConfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
     clearScreen: false,
     plugins: [
+        tsConfigPaths(),
         remixCloudflareDevProxy(),
         remix({
             future: {
