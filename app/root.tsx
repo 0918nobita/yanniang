@@ -19,7 +19,7 @@ export const links: LinksFunction = () => [
 
 function Document({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="ja" suppressHydrationWarning={true}>
+        <html lang="ja" suppressHydrationWarning>
             <head>
                 <meta charSet="utf-8" />
                 <meta

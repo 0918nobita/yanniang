@@ -2,4 +2,5 @@
 
 interface Env {
 	SESSIONS: KVNamespace;
+	DB: D1Database;
 }
