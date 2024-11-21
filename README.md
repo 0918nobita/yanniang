@@ -12,6 +12,10 @@ Cloudflare Pages にデプロイすることを想定して開発しています
 bun install
 ```
 
+## `wrangler.toml` について
+
+`wrangler.toml.example` を参考に作成してください。
+
 ## 型定義の生成
 
 ```bash
