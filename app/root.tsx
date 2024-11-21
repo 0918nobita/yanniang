@@ -1,25 +1,35 @@
-import type { LinksFunction } from '@remix-run/cloudflare';
 import {
-    isRouteErrorResponse,
     Links,
     Meta,
     Outlet,
     Scripts,
     ScrollRestoration,
-    useRouteError,
-} from '@remix-run/react';
+    isRouteErrorResponse,
+} from 'react-router';
+// import { createContext } from 'react';
 
 import { Toaster } from '~/components/ui/sonner';
 import { RootLayout } from '~/components/RootLayout';
+import { getLanguage } from '~/i18n.server';
+import type { Language } from '~/language';
 import tailwind from '~/tailwind.css?url';
+import type { Route } from './+types/root';
 
-export const links: LinksFunction = () => [
+export const loader = async ({ request }: Route.LoaderArgs) => {
+    const language = await getLanguage(request);
+    return { language };
+};
+
+export const links: Route.LinksFunction = () => [
     { rel: 'stylesheet', href: tailwind },
 ];
 
-function Document({ children }: { children: React.ReactNode }) {
+function Document({
+    children,
+    language,
+}: { children: React.ReactNode; language: Language }) {
     return (
-        <html lang="ja" suppressHydrationWarning>
+        <html lang={language} suppressHydrationWarning>
             <head>
                 <meta charSet="utf-8" />
                 <meta
@@ -39,20 +49,20 @@ function Document({ children }: { children: React.ReactNode }) {
     );
 }
 
-export default function App() {
+export default function App({ loaderData }: Route.ComponentProps) {
     return (
-        <Document>
+        <Document language={loaderData.language}>
             <Outlet />
         </Document>
     );
 }
 
-export function ErrorBoundary() {
-    const error = useRouteError();
+export function ErrorBoundary({ error, loaderData }: Route.ErrorBoundaryProps) {
+    const language = loaderData === undefined ? 'ja' : loaderData.language;
 
     if (isRouteErrorResponse(error)) {
         return (
-            <Document>
+            <Document language={language}>
                 <h1>
                     {error.status} {error.statusText}
                 </h1>
@@ -62,7 +72,7 @@ export function ErrorBoundary() {
     }
 
     return (
-        <Document>
+        <Document language={language}>
             {error instanceof Error ? (
                 <>
                     <h1>Error</h1>

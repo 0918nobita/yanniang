@@ -1,8 +1,10 @@
-import { redirect, type LoaderFunctionArgs } from '@remix-run/cloudflare';
+import { redirect } from 'react-router';
 
 import { destroySession, getSession } from '~/session';
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+import type { Route } from './+types/logout';
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
     const session = await getSession(request.headers.get('Cookie'));
 
     return redirect('/', {

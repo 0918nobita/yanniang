@@ -20,6 +20,7 @@ tsconfig.tsbuildinfo
 .wrangler/
 wrangler.toml
 
-# Remix
+# React Router
 
+.react-router/
 build/

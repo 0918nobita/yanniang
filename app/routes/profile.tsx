@@ -1,9 +1,10 @@
-import { redirect, type LoaderFunctionArgs } from '@remix-run/cloudflare';
-import { useLoaderData } from '@remix-run/react';
+import { redirect } from 'react-router';
 
 import { getSession } from '~/session';
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+import type { Route } from './+types/profile';
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
     const session = await getSession(request.headers.get('Cookie'));
 
     if (!session.get('username')) {
@@ -14,8 +15,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return userId;
 };
 
-export default function Profile() {
-    const userId = useLoaderData<typeof loader>();
+export default function Profile({ loaderData }: Route.ComponentProps) {
+    const userId = loaderData as string;
 
     return <p>{userId}</p>;
 }
