@@ -59,7 +59,7 @@ web_modules/
 
 # TypeScript cache
 
-\*.tsbuildinfo
+tsconfig.tsbuildinfo
 
 # Optional npm cache directory
 
@@ -170,3 +170,8 @@ dist
 
 .dev.vars
 .wrangler/
+wrangler.toml
+
+# Remix
+
+build/
