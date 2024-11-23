@@ -6,13 +6,14 @@ import {
     ScrollRestoration,
     isRouteErrorResponse,
 } from 'react-router';
-// import { createContext } from 'react';
 
 import { Toaster } from '~/components/ui/sonner';
 import { RootLayout } from '~/components/RootLayout';
-import { getLanguage } from '~/i18n.server';
-import type { Language } from '~/language';
+import { I18nProvider } from '~/i18n/context';
+import { getLanguage } from '~/i18n/resolver.server';
+import type { Language } from '~/i18n/language';
 import tailwind from '~/tailwind.css?url';
+
 import type { Route } from './+types/root';
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
@@ -40,8 +41,10 @@ function Document({
                 <Links />
             </head>
             <body>
-                <RootLayout>{children}</RootLayout>
-                <Toaster position="bottom-left" />
+                <I18nProvider language={language}>
+                    <RootLayout>{children}</RootLayout>
+                    <Toaster position="bottom-left" />
+                </I18nProvider>
                 <ScrollRestoration />
                 <Scripts />
             </body>

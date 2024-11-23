@@ -6,8 +6,19 @@ import { z } from 'zod';
 
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
+import { getLanguage } from '~/i18n/resolver.server';
+import { tl } from '~/i18n/translations';
+import { useTranslation } from '~/i18n/useTranslation';
 
 import type { Route } from './+types/signup';
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+    return { language: await getLanguage(request) };
+};
+
+export const meta = ({ data }: Route.MetaArgs) => [
+    { title: tl(data.language, 'signUp') },
+];
 
 const formDataSchema = z.string().length(10);
 
@@ -69,9 +80,9 @@ export const action = async ({ context, request }: Route.ActionArgs) => {
     return data({ type: 'success' as const });
 };
 
-export const meta: Route.MetaFunction = () => [{ title: '注册' }];
-
 export default function SignUp({ actionData }: Route.ComponentProps) {
+    const { t } = useTranslation();
+
     const toastIds = useRef<Array<string | number>>([]);
 
     const singleToast = useCallback(
@@ -140,7 +151,7 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
 
     return (
         <>
-            <h1 className="text-xl">注册</h1>
+            <h1 className="text-xl">{t('signUp')}</h1>
 
             <p>招待コードが必要です</p>
 

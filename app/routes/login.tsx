@@ -8,9 +8,20 @@ import { z } from 'zod';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
+import { getLanguage } from '~/i18n/resolver.server';
+import { tl } from '~/i18n/translations';
+import { useTranslation } from '~/i18n/useTranslation';
 import { getSession, commitSession } from '~/session';
 
 import type { Route } from './+types/login';
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+    return { language: await getLanguage(request) };
+};
+
+export const meta = ({ data }: Route.MetaArgs) => [
+    { title: tl(data.language, 'login') },
+];
 
 type User = Readonly<{
     username: string;
@@ -74,9 +85,8 @@ export const action = async ({ context, request }: Route.ActionArgs) => {
     return data({ type: 'success' as const }, { headers });
 };
 
-export const meta: Route.MetaFunction = () => [{ title: '登录' }];
-
 export default function Login({ actionData }: Route.ComponentProps) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -93,21 +103,25 @@ export default function Login({ actionData }: Route.ComponentProps) {
 
     return (
         <>
-            <h1 className="text-xl">登录</h1>
+            <h1 className="text-xl">{t('login')}</h1>
 
             <Form method="post">
-                <Label>用户名</Label>
-                <Input className="my-3" name="username" placeholder="用户名" />
+                <Label>{t('userName')}</Label>
+                <Input
+                    className="my-3"
+                    name="username"
+                    placeholder={t('userName')}
+                />
 
-                <Label>密码</Label>
+                <Label>{t('password')}</Label>
                 <Input
                     className="my-3"
                     type="password"
                     name="password"
-                    placeholder="密码"
+                    placeholder={t('password')}
                 />
 
-                <Button type="submit">登录</Button>
+                <Button type="submit">{t('login')}</Button>
             </Form>
         </>
     );
