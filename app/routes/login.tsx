@@ -1,12 +1,8 @@
-import * as bcrypt from 'bcrypt-ts';
 import { data as dataFn } from 'react-router';
-import { D1QB } from 'workers-qb';
-import { z } from 'zod';
 
 import { getLanguage } from '~/i18n/resolver.server';
 import { tl } from '~/i18n/translations';
 import { LoginPage } from '~/pages/LoginPage';
-import { getSession, commitSession } from '~/session';
 
 import type { Route } from './+types/login';
 
@@ -23,24 +19,31 @@ type User = Readonly<{
     password: string;
 }>;
 
-const formSchema = z.object({
-    username: z.string().min(6),
-    password: z.string().min(8),
-});
-
-type ActionData = Readonly<
-    | { type: 'initial' }
-    | { type: 'invalid_form_data' }
-    | { type: 'success' }
-    | { type: 'failed' }
->;
+type ActionData =
+    | Readonly<{ type: 'invalid_form_data' } | { type: 'failed' }>
+    | undefined;
 
 const data = (actionData: ActionData, init?: number | ResponseInit) =>
     dataFn(actionData, init);
 
+const isValidRedirectUrl = ({
+    url,
+    baseUrl,
+}: { url: string; baseUrl: string }) => {
+    try {
+        const urlObj = new URL(url, baseUrl);
+        return url.startsWith('/') || urlObj.origin === baseUrl;
+    } catch {
+        return false;
+    }
+};
+
 export const action = async ({ context, request }: Route.ActionArgs) => {
     const formData = await request.formData();
 
+    return data({ type: 'invalid_form_data' }, { status: 400 });
+
+    /*
     const validationResult = formSchema.safeParse({
         username: formData.get('username'),
         password: formData.get('password'),
@@ -72,16 +75,34 @@ export const action = async ({ context, request }: Route.ActionArgs) => {
         return data({ type: 'failed' }, { status: 401 });
     }
 
-    const session = await getSession(request.headers.get('Cookie'));
+    const baseUrl = context.cloudflare.env.BASE_URL;
+    const url = new URL(request.url, baseUrl);
+    const returnTo = url.searchParams.get('returnTo');
 
-    session.set('username', validatedFormData.username);
+    let redirectUrl = '/';
 
-    const headers = { 'Set-Cookie': await commitSession(session) };
+    if (returnTo !== null) {
+        const decodedUrl = decodeURIComponent(returnTo);
 
-    return data({ type: 'success' as const }, { headers });
+        if (isValidRedirectUrl({ url: decodedUrl, baseUrl })) {
+            redirectUrl = decodedUrl;
+        }
+    }
+
+    return redirect(redirectUrl, {
+        headers: {
+            'Set-Cookie': await commitLoginSession({
+                context,
+                userName: user.username,
+            }),
+        },
+    });
+    */
 };
 
-export default function Login({ actionData }: Route.ComponentProps) {
+export default function Login(props: Route.ComponentProps) {
+    const actionData = props.actionData as ActionData;
+
     return (
         <LoginPage
             type={actionData === undefined ? 'initial' : actionData.type}

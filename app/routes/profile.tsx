@@ -1,18 +1,20 @@
 import { redirect } from 'react-router';
 
-import { getSession } from '~/session';
+import { getUser } from '~/session.server';
 
 import type { Route } from './+types/profile';
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
-    const session = await getSession(request.headers.get('Cookie'));
+export const loader = async ({ context, request }: Route.LoaderArgs) => {
+    const user = await getUser({
+        context,
+        cookieHeader: request.headers.get('Cookie'),
+    });
 
-    if (!session.get('username')) {
-        return redirect('/login');
+    if (user === null) {
+        return redirect(`/login?returnTo=${encodeURIComponent('/profile')}`);
     }
 
-    const userId: string = session.get('username');
-    return userId;
+    return user.userName;
 };
 
 export default function Profile({ loaderData }: Route.ComponentProps) {

@@ -1,6 +1,6 @@
 import { createCookie } from 'react-router';
 
-import type { Language } from './language';
+import { LangCode } from '~/domain/valueObjects';
 
 export const languageCookie = createCookie('user-language', {
     maxAge: 31536000,
@@ -10,7 +10,7 @@ export const languageCookie = createCookie('user-language', {
     path: '/',
 });
 
-function resolveLanguage(acceptLanguage: string): Language {
+function resolveLanguage(acceptLanguage: string): LangCode {
     const langPriority = acceptLanguage
         .split(',')
         .map((item) => item.split(';')[0].trim());
@@ -18,10 +18,10 @@ function resolveLanguage(acceptLanguage: string): Language {
     const jaIndex = langPriority.findIndex((item) => item === 'ja');
     const zhCnIndex = langPriority.findIndex((item) => item === 'zh-CN');
 
-    return jaIndex < zhCnIndex ? 'ja' : 'zh-CN';
+    return jaIndex < zhCnIndex ? LangCode.ja : LangCode.zhCN;
 }
 
-export async function getLanguage(request: Request): Promise<Language> {
+export async function getLanguage(request: Request): Promise<LangCode> {
     // TODO: ログイン済みの場合、ユーザー設定を参照する
 
     const cookieLang = await languageCookie.parse(
@@ -38,5 +38,5 @@ export async function getLanguage(request: Request): Promise<Language> {
         return resolveLanguage(acceptLanguage);
     }
 
-    return 'ja';
+    return LangCode.ja;
 }

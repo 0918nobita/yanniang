@@ -2,5 +2,7 @@
 
 interface Env {
 	SESSIONS: KVNamespace;
-	DB: D1Database;
+	BASE_URL: string;
+	DATABASE_URL: string;
+	ROLLBAR_ACCESS_TOKEN: string;
 }

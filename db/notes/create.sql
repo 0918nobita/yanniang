@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS notes (
+    id TEXT NOT NULL,
+    ja TEXT NOT NULL,
+    zh_cn TEXT NOT NULL,
+    author_id TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_deleted INTEGER NOT NULL DEFAULT 0
+);

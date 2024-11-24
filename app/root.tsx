@@ -9,9 +9,9 @@ import {
 
 import { Toaster } from '~/components/ui/sonner';
 import { RootLayout } from '~/components/RootLayout';
+import { LangCode } from '~/domain/valueObjects';
 import { I18nProvider } from '~/i18n/context';
 import { getLanguage } from '~/i18n/resolver.server';
-import type { Language } from '~/i18n/language';
 import tailwind from '~/tailwind.css?url';
 
 import type { Route } from './+types/root';
@@ -28,7 +28,7 @@ export const links: Route.LinksFunction = () => [
 function Document({
     children,
     language,
-}: { children: React.ReactNode; language: Language }) {
+}: { children: React.ReactNode; language: LangCode }) {
     return (
         <html lang={language} suppressHydrationWarning>
             <head>
@@ -61,7 +61,8 @@ export default function App({ loaderData }: Route.ComponentProps) {
 }
 
 export function ErrorBoundary({ error, loaderData }: Route.ErrorBoundaryProps) {
-    const language = loaderData === undefined ? 'ja' : loaderData.language;
+    const language =
+        loaderData === undefined ? LangCode.ja : loaderData.language;
 
     if (isRouteErrorResponse(error)) {
         return (
