@@ -5,11 +5,7 @@
     "target": "ES2022",
     "module": "ESNext",
     "jsx": "react-jsx",
-    "types": [
-      "@cloudflare/workers-types/2023-07-01",
-      "@react-router/cloudflare",
-      "vite/client"
-    ],
+    "types": ["vite/client"],
     "allowJs": true,
     "checkJs": true,
     "moduleResolution": "bundler",
@@ -25,19 +21,14 @@
     "paths": {
       "~/*": ["./app/*"]
     },
-    "rootDirs": [
-      ".",
-      "./.react-router/types"
-    ]
+    "rootDirs": [".", "./.react-router/types"]
   },
   "include": [
     ".react-router/types/**/*",
     "app/**/*.ts",
     "app/**/*.tsx",
-    "load-context.ts",
     "react-router.config.ts",
     "tailwind.config.ts",
-    "vite.config.ts",
-    "worker-configuration.d.ts"
+    "vite.config.ts"
   ]
 }
