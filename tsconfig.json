@@ -6,8 +6,6 @@
     "module": "ESNext",
     "jsx": "react-jsx",
     "types": [
-      "@cloudflare/workers-types/2023-07-01",
-      "@react-router/cloudflare",
       "vite/client"
     ],
     "allowJs": true,
@@ -37,7 +35,6 @@
     "load-context.ts",
     "react-router.config.ts",
     "tailwind.config.ts",
-    "vite.config.ts",
-    "worker-configuration.d.ts"
+    "vite.config.ts"
   ]
 }
