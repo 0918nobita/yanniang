@@ -4,9 +4,7 @@ import { toast } from 'sonner';
 import type { Route } from './+types/login';
 import { LoginButton } from '~/components/LoginButton';
 
-export function meta(_: Route.MetaArgs) {
-    return [{ title: '言娘 账号登录' }];
-}
+export const meta: Route.MetaFunction = () => [{ title: '言娘 账号登录' }];
 
 export default function Login(_: Route.ComponentProps) {
     const [, onSubmit, isPending] = useActionState<null, FormData>(
@@ -19,7 +17,7 @@ export default function Login(_: Route.ComponentProps) {
     );
 
     return (
-        <div className="grid place-items-center min-h-screen p-4">
+        <div className="grid place-items-center min-h-dvh p-4">
             <main className="flex flex-col items-center w-[400px] px-4 py-4 rounded-md bg-white dark:bg-gray-700">
                 <h2 className="mb-4 text-xl">言娘 账号登录</h2>
                 <form action={onSubmit} className="w-full flex flex-col">
