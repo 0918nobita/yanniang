@@ -6,6 +6,11 @@ import { LoginButton } from '~/components/LoginButton';
 
 export const meta: Route.MetaFunction = () => [{ title: '言娘 账号登录' }];
 
+export const loader = ({ context }: Route.LoaderArgs) => {
+    console.log('context.message:', context.message);
+    return {};
+};
+
 export default function Login(_: Route.ComponentProps) {
     const [, onSubmit, isPending] = useActionState<null, FormData>(
         (_prevState, formData) =>

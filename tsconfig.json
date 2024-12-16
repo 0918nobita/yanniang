@@ -28,6 +28,7 @@
     "app/**/*.ts",
     "app/**/*.tsx",
     "react-router.config.ts",
+    "server.ts",
     "tailwind.config.ts",
     "vite.config.ts"
   ]
