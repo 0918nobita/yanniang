@@ -1,15 +1,10 @@
-use axum::{extract::State, routing::get, Router};
+use axum::Router;
 use sqlx::postgres::PgPool;
-use tracing::info;
+use tower_http::services::ServeDir;
 
 #[derive(Clone)]
 struct AppState {
     pool: PgPool,
-}
-
-async fn hello_world(_app_state: State<AppState>) -> &'static str {
-    info!("Hello");
-    "Hello, world!"
 }
 
 #[shuttle_runtime::main]
@@ -20,7 +15,7 @@ async fn main(#[shuttle_shared_db::Postgres] pool: PgPool) -> shuttle_axum::Shut
         .expect("Failed to run migrations");
 
     let router = Router::new()
-        .route("/", get(hello_world))
+        .fallback_service(ServeDir::new("./static"))
         .with_state(AppState { pool });
 
     Ok(router.into())
