@@ -1,0 +1,4 @@
+id,handle,display_name,password_hash,created_at,modified_at,is_deleted
+0,h_test,"Test User","$argon2id$v=19$m=19456,t=2,p=1$EXjSzVlvBD3Vhzx341vTEg$1DUxC2jmBYDAH2Wet4f/4CzyAb8XyCCBXPuQyemgTbw","2025-02-07 18:00:00+09:00",,0
+1,h_zhcn,"男娘","$argon2id$v=19$m=19456,t=2,p=1$sgxPTrKb5ieQg2dvRhkc7A$iAXyTM4uXwLROX4bVwSfT8N7v2eDeD4NbHX9js+CXFo","2025-02-07 18:10:00+09:00",,0
+2,h_jajp,"樱花妹","$argon2id$v=19$m=19456,t=2,p=1$XUPnTpaOhWvzLESF5UFqaQ$aR9JJTjsAOjJu44zz2V0dyTIQZSW350d9yJ1HNYN5YQ","2025-02-07 18:20:00+09:00",,0

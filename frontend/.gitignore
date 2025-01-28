@@ -1,25 +1,18 @@
-node_modules
+# Dependency directories
 
-# Output
-.output
-.vercel
-.netlify
-.wrangler
-/.svelte-kit
-/build
+node_modules/
 
-# OS
-.DS_Store
-Thumbs.db
+# TypeScript cache
 
-# Env
-.env
-.env.*
-!.env.example
-!.env.test
+tsconfig.tsbuildinfo
 
-# Vite
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
+# wrangler project
 
-*storybook.log
+.dev.vars
+.wrangler/
+wrangler.toml
+
+# React Router
+
+.react-router/
+build/

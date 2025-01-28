@@ -1,0 +1,31 @@
+[package]
+name = "yanniang"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+members = [
+    "crates/domain",
+    "crates/infrastructure",
+    "crates/presentation",
+    "crates/usecase",
+]
+
+[dependencies]
+axum = "0.8.1"
+color-eyre = "0.6.3"
+shuttle-axum = "0.52.0"
+shuttle-runtime = { version = "0.52.0", default-features = false }
+shuttle-shared-db = { version = "0.52.0", features = ["postgres", "sqlx"] }
+sqlx = { version = "0.8.3", features = ["chrono", "postgres", "runtime-tokio-rustls", "uuid"] }
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+yanniang-domain = { path = "./crates/domain" }
+yanniang-infrastructure = { path = "./crates/infrastructure" }
+yanniang-presentation = { path = "./crates/presentation" }
+yanniang-usecase = { path = "./crates/usecase" }
+
+[profile.release]
+codegen-units = 1
+opt-level = "s"
+strip = true

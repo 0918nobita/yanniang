@@ -1,0 +1,6 @@
+# Shuttle.rs
+.shuttle*
+Secrets*.toml
+
+# Cargo
+target/

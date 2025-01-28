@@ -1,0 +1,16 @@
+{
+    "folders": [
+        {
+            "path": "frontend"
+        },
+        {
+            "path": "backend"
+        },
+        {
+            "path": "docs"
+        }
+    ],
+    "settings": {
+        "biome.enabled": true
+    }
+}

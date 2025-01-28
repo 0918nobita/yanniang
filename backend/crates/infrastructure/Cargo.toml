@@ -1,0 +1,13 @@
+[package]
+name = "yanniang-infrastructure"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+argon2 = "0.5.3"
+async-trait = "0.1.85"
+color-eyre = "0.6.3"
+sqlx = { version = "0.8.3", features = ["chrono", "postgres", "runtime-tokio-rustls", "uuid"] }
+tracing = "0.1.41"
+uuid = { version = "1.13.1", features = ["v4", "v7"] }
+yanniang-domain = { path = "../domain" }

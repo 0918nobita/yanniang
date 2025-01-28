@@ -1,0 +1,15 @@
+[package]
+name = "yanniang-domain"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+argon2 = "0.5.3"
+async-trait = "0.1.85"
+chrono = "0.4.39"
+color-eyre = "0.6.3"
+thiserror = "2.0.11"
+tracing = "0.1.41"
+unicode-segmentation = "1.12.0"
+uuid = { version = "1.12.1", features = ["v7"] }
+vec1 = "1.12.1"

@@ -1,6 +1,8 @@
-import { sveltekit } from "@sveltejs/kit/vite";
-import { defineConfig } from "vite";
+import { reactRouter } from '@react-router/dev/vite';
+import { defineConfig } from 'vite';
+import tsConfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
-    plugins: [sveltekit()],
+    clearScreen: false,
+    plugins: [tsConfigPaths(), reactRouter()],
 });
