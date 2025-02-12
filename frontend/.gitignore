@@ -1,17 +1,5 @@
 node_modules
 
-# Output
-.output
-.vercel
-.netlify
-.wrangler
-/.svelte-kit
-/build
-
-# OS
-.DS_Store
-Thumbs.db
-
 # Env
 .env
 .env.*
@@ -23,3 +11,9 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 *storybook.log
+
+# TypeScript
+tsconfig.tsbuildinfo
+
+# React Router
+.react-router/
