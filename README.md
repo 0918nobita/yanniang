@@ -18,5 +18,6 @@ bun run dev
 ## 启动后端
 
 ```bash
+cd backend
 shuttle run
 ```
