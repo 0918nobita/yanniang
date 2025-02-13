@@ -1,8 +1,15 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import {
+    isRouteErrorResponse,
+    Links,
+    Meta,
+    Outlet,
+    Scripts,
+    ScrollRestoration,
+} from "react-router";
 
 import type { Route } from "./+types/root";
 
-export default function App({}: Route.ComponentProps) {
+export default function App() {
     return (
         <html lang="ja" suppressHydrationWarning>
             <head>
@@ -20,5 +27,29 @@ export default function App({}: Route.ComponentProps) {
                 <Scripts />
             </body>
         </html>
+    );
+}
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+    if (isRouteErrorResponse(error)) {
+        return (
+            <>
+                <h1>
+                    {error.status} {error.statusText}
+                </h1>
+                <p>{error.data}</p>
+            </>
+        );
+    }
+
+    return error instanceof Error ? (
+        <>
+            <h1>Error</h1>
+            <p>{error.message}</p>
+            <h2>Stacktrace:</h2>
+            <pre>{error.stack}</pre>
+        </>
+    ) : (
+        <h1>Unknown error</h1>
     );
 }
