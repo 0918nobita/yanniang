@@ -5,6 +5,7 @@ node_modules
 .env.*
 !.env.example
 !.env.test
+.dev.vars
 
 # Vite
 vite.config.js.timestamp-*

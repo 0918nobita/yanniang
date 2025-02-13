@@ -2,4 +2,5 @@
 
 interface Env {
 	SESSIONS: KVNamespace;
+	BACKEND_HOST: string;
 }
