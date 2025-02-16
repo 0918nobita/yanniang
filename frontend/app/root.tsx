@@ -1,3 +1,4 @@
+import React from "react";
 import {
     isRouteErrorResponse,
     Links,
@@ -6,11 +7,10 @@ import {
     Scripts,
     ScrollRestoration,
 } from "react-router";
-import "./style.css";
 
 import type { Route } from "./+types/root";
 
-export default function App() {
+export function Layout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="ja" suppressHydrationWarning>
             <head>
@@ -23,12 +23,16 @@ export default function App() {
                 <Links />
             </head>
             <body>
-                <Outlet />
+                {children}
                 <ScrollRestoration />
                 <Scripts />
             </body>
         </html>
     );
+}
+
+export default function Root() {
+    return <Outlet />;
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
