@@ -41,7 +41,11 @@ export default function Index({
     );
 
     useEffect(() => {
-        const socket = new WebSocket(`wss://${backendHost}/ws`);
+        const socket = new WebSocket(
+            import.meta.env.PROD
+                ? `wss://${backendHost}/ws`
+                : `ws://${backendHost}/ws`
+        );
 
         socketRef.current = socket;
 
