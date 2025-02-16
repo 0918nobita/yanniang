@@ -10,6 +10,22 @@ import {
 
 import type { Route } from "./+types/root";
 
+export const links: Route.LinksFunction = () => [
+    {
+        rel: "preconnect",
+        href: "https://fonts.googleapis.com",
+    },
+    {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+    },
+    {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+SC:wght@100..900&display=swap",
+    },
+];
+
 export function Layout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="ja" suppressHydrationWarning>

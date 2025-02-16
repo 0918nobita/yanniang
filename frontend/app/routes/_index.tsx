@@ -1,8 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Either, Option, ParseResult, Schema } from "effect";
+import React, { useCallback, useRef, useState, useTransition } from "react";
 
-import { Route } from "./+types/_index";
+import { useChatConnection } from "~/chat/useChatConnection";
+import { SubmitButton } from "~/components/SubmitButton";
+import { Timeline } from "~/components/Timeline";
+import { Message } from "~/model/message";
 
-export const meta: Route.MetaFunction = () => [{ title: "言娘" }];
+import type { Route } from "./+types/_index";
 
 export const loader = ({ context }: Route.LoaderArgs) => {
     return {
@@ -10,107 +14,196 @@ export const loader = ({ context }: Route.LoaderArgs) => {
     };
 };
 
-type ChatMessage = Readonly<{
-    id: string;
-    name: string;
-    message: string;
-}>;
+export const meta: Route.MetaFunction = () => [{ title: "言娘" }];
 
-export default function Index({
+type FieldErrors = {
+    name: Option.Option<string>;
+    content: Option.Option<string>;
+};
+
+const getFieldErrors = (parseError: ParseResult.ParseError): FieldErrors => {
+    const errors = ParseResult.ArrayFormatter.formatErrorSync(parseError);
+
+    const name = Option.fromNullable(
+        errors.find(
+            (error) =>
+                Array.isArray(error.path) &&
+                error.path.length === 1 &&
+                error.path[0] === "name"
+        )
+    ).pipe(Option.map((error) => error.message));
+
+    const content = Option.fromNullable(
+        errors.find(
+            (error) =>
+                Array.isArray(error.path) &&
+                error.path.length === 1 &&
+                error.path[0] === "content"
+        )
+    ).pipe(Option.map((error) => error.message));
+
+    return { name, content };
+};
+
+const validateMessageToSend = ({
+    name,
+    content,
+}: {
+    name: unknown;
+    content: unknown;
+}): Either.Either<Message, FieldErrors> =>
+    Schema.decodeUnknownEither(Message)(
+        {
+            name,
+            content,
+        },
+        {
+            errors: "all",
+        }
+    ).pipe(Either.mapLeft(getFieldErrors));
+
+const SubmitButtonMemo = React.memo(SubmitButton);
+
+export default function Ws({
     loaderData: { backendHost },
 }: Route.ComponentProps) {
-    const [name, setName] = useState("");
-    const [talkHistory, setTalkHistory] = useState<ChatMessage[]>([]);
+    const [, startTransition] = useTransition();
 
-    const socketRef = useRef<WebSocket | null>(null);
+    const timelineRef = useRef<HTMLUListElement | null>(null);
+    const timelineEndRef = useRef<HTMLDivElement | null>(null);
 
-    const onSubmit = useCallback(async (formData: FormData) => {
-        if (socketRef.current === null) return;
+    const nameInputRef = useRef<HTMLInputElement | null>(null);
+    const contentInputRef = useRef<HTMLTextAreaElement | null>(null);
 
-        const name = formData.get("name") as string;
-        const message = formData.get("message") as string;
+    // const intersectionObserverRef = useRef<IntersectionObserver | null>(null);
 
-        socketRef.current.send(JSON.stringify({ name, message }));
+    const shouldAutoScrollRef = useRef(true);
+
+    const [autoScroll, setAutoScroll] = useState(true);
+
+    const [errors, setErrors] = useState<FieldErrors>({
+        name: Option.none(),
+        content: Option.none(),
+    });
+
+    const { messages, sendMessage } = useChatConnection({
+        backendHost,
+        onMessageReceived: () => {
+            setTimeout(() => {
+                if (shouldAutoScrollRef.current) {
+                    timelineEndRef.current?.scrollIntoView({
+                        behavior: "smooth",
+                    });
+                }
+            }, 100);
+        },
+        onMessageSent: () => {
+            if (contentInputRef.current !== null) {
+                contentInputRef.current.value = "";
+            }
+        },
+    });
+
+    const handleSubmit = useCallback((formData: FormData) => {
+        const draftMessage = {
+            name: formData.get("name"),
+            content: formData.get("content"),
+        };
+
+        const validationResult = validateMessageToSend(draftMessage);
+
+        if (Either.isLeft(validationResult)) {
+            setErrors(validationResult.left);
+            return;
+        }
+
+        const message = validationResult.right;
+
+        sendMessage({
+            name: message.name,
+            content: message.content,
+        });
     }, []);
 
-    const onChangeName = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
-            setName(e.target.value);
+    const handleNameKeyDown = useCallback((e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+        }
+    }, []);
+
+    const handleContentKeyDown = useCallback(
+        (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+            if (e.ctrlKey && e.key === "Enter") {
+                e.preventDefault();
+                const form = e.currentTarget.form!;
+                form.requestSubmit();
+            }
         },
-        [name]
+        []
     );
 
-    useEffect(() => {
-        const socket = new WebSocket(
-            import.meta.env.PROD
-                ? `wss://${backendHost}/ws`
-                : `ws://${backendHost}/ws`
-        );
+    const handleUserScroll = () => {
+        if (timelineRef.current === null) return;
 
-        socketRef.current = socket;
+        // timelineRef, timelineEndRef の交差を監視する
+    };
 
-        socket.addEventListener("message", (event) => {
-            const historyItem = JSON.parse(event.data) as {
-                id: string;
-                name: string;
-                message: string;
-            };
+    const scrollToBottom = () => {
+        if (timelineEndRef.current === null) return;
 
-            setTalkHistory((prev) => [historyItem, ...prev]);
+        timelineEndRef.current.scrollIntoView({
+            behavior: "smooth",
         });
 
-        return () => {
-            socket.close();
-        };
-    }, []);
+        shouldAutoScrollRef.current = true;
+
+        startTransition(() => {
+            setAutoScroll(true);
+        });
+    };
 
     return (
-        <main className="px-4 py-2">
-            <h1 className="text-2xl">Simple Chat</h1>
+        <main className="mx-auto max-w-2xl h-dvh flex flex-col">
+            <Timeline
+                ref={timelineRef}
+                timelineEndRef={timelineEndRef}
+                messages={messages}
+                autoScroll={autoScroll}
+                handleUserScroll={handleUserScroll}
+                scrollToBottom={scrollToBottom}
+            />
+
             <form
-                action={onSubmit}
-                className="my-2 flex flex-col px-4 bg-gray-100 border border-gray-300 rounded-md"
+                className="p-2 flex flex-col bg-gray-100"
+                action={handleSubmit}
             >
-                <label className="mt-3">
-                    名前：
-                    <input
-                        type="text"
-                        name="name"
-                        required
-                        max={20}
-                        className="py-1 px-2 bg-white border border-gray-300 rounded-md"
-                        value={name}
-                        onChange={onChangeName}
-                    />
-                </label>
-                <label className="mt-3">
-                    本文：
-                    <input
-                        type="text"
-                        name="message"
-                        required
-                        max={140}
-                        className="py-1 px-2 bg-white border border-gray-300 rounded-md"
-                    />
-                </label>
-                <button
-                    type="submit"
-                    className="mt-3 mb-2 py-1 max-w-[120px] bg-cyan-600 text-white rounded-md"
-                >
-                    送信
-                </button>
+                <input
+                    type="text"
+                    name="name"
+                    minLength={5}
+                    maxLength={20}
+                    required
+                    placeholder="请输入你的用户名"
+                    className="py-1 px-2 bg-white border border-gray-300 rounded-md"
+                    ref={nameInputRef}
+                    onKeyDown={handleNameKeyDown}
+                />
+                <div className="flex gap-2 items-center mt-2">
+                    <div className="flex-1 min-w-0">
+                        <textarea
+                            name="content"
+                            minLength={1}
+                            maxLength={1000}
+                            required
+                            placeholder="请输入本文 (按Ctrl + Enter发送)"
+                            className="w-full px-2 py-1 resize-none bg-white rounded-md border border-gray-300"
+                            ref={contentInputRef}
+                            onKeyDown={handleContentKeyDown}
+                        />
+                    </div>
+                    <SubmitButtonMemo />
+                </div>
             </form>
-            <ul>
-                {talkHistory.map(({ id, name, message }) => (
-                    <li
-                        className="mt-2 px-2 py-2 border rounded-md border-gray-300 w-fit"
-                        key={id}
-                    >
-                        <div className="text-gray-700">{name}</div>
-                        <div>{message}</div>
-                    </li>
-                ))}
-            </ul>
         </main>
     );
 }

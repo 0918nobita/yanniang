@@ -2,6 +2,7 @@
 	"compilerOptions": {
     "incremental": true,
     "module": "esnext",
+    "target": "esnext",
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"skipLibCheck": true,
@@ -24,6 +25,7 @@
     "app/**/*",
     "functions/**/*",
     "loadContext.ts",
+    "tailwind.config.ts",
     "react-router.config.ts",
     "vite.config.ts",
     "worker-configuration.d.ts"

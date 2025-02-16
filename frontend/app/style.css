@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+:root {
+    --font-sans: "Noto Sans JP", "Noto Sans SC", "sans-serif";
+}

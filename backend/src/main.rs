@@ -17,13 +17,13 @@ use uuid::Uuid;
 struct ChatMessage {
     id: Uuid,
     name: String,
-    message: String,
+    content: String,
 }
 
 #[derive(Deserialize)]
 struct NewMessage {
     name: String,
-    message: String,
+    content: String,
 }
 
 #[derive(Clone)]
@@ -60,7 +60,7 @@ async fn handle_socket(socket: WebSocket, state: AppState) {
             let msg = ChatMessage {
                 id: Uuid::new_v4(),
                 name: new_msg.name,
-                message: new_msg.message,
+                content: new_msg.content,
             };
             state.tx.send(msg).expect("Failed to send message");
         }
