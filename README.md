@@ -7,6 +7,14 @@ yánniang
 - Axum (Rust)
 - React Router (TypeScript)
 
+## 环境配置
+
+启动前，请在 `frontend` 目录下创建一个 `.env.vars` 文件来配置环境变量：
+
+```text
+BACKEND_HOST = "localhost:8000"
+```
+
 ## 启动前端的开发服务
 
 ```bash
