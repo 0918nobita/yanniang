@@ -1,19 +1,14 @@
-import { AppLoadContext } from "react-router";
-import { PlatformProxy } from "wrangler";
+import type { GetLoadContextFunction } from '@react-router/cloudflare';
 
-type Cloudflare = Omit<PlatformProxy<Env>, "dispose" | "caches" | "cf">;
+// biome-ignore lint/suspicious/noExplicitAny: params を使用しないため
+type Cloudflare = EventContext<Env, any, Record<string, unknown>>;
 
-declare module "react-router" {
+declare module 'react-router' {
     interface AppLoadContext {
         cloudflare: Cloudflare;
     }
 }
 
-type GetLoadContext = (args: {
-    request: Request;
-    context: { cloudflare: Cloudflare };
-}) => AppLoadContext;
-
-export const getLoadContext: GetLoadContext = ({ context }) => {
+export const getLoadContext: GetLoadContextFunction<Env> = ({ context }) => {
     return { ...context };
 };

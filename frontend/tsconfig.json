@@ -1,13 +1,13 @@
 {
-	"compilerOptions": {
+  "compilerOptions": {
     "incremental": true,
     "module": "esnext",
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"skipLibCheck": true,
-		"sourceMap": true,
-		"strict": true,
-		"moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "moduleResolution": "bundler",
     "types": [
       "@cloudflare/workers-types/2023-07-01",
       "@react-router/cloudflare",
@@ -19,7 +19,7 @@
     },
     "rootDirs": [".", "./.react-router/types"],
     "noEmit": true
-	},
+  },
   "include": [
     "app/**/*",
     "functions/**/*",
@@ -28,7 +28,5 @@
     "vite.config.ts",
     "worker-configuration.d.ts"
   ],
-  "exclude": [
-    "build"
-  ]
+  "exclude": ["build"]
 }

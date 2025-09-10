@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import type React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Route } from "./+types/_index";
+import type { Route } from './+types/_index';
 
-export const meta: Route.MetaFunction = () => [{ title: "言娘" }];
+export const meta: Route.MetaFunction = () => [{ title: '言娘' }];
 
 export const loader = ({ context }: Route.LoaderArgs) => {
     return {
@@ -19,7 +20,7 @@ type ChatMessage = Readonly<{
 export default function Index({
     loaderData: { backendHost },
 }: Route.ComponentProps) {
-    const [name, setName] = useState("");
+    const [name, setName] = useState('');
     const [talkHistory, setTalkHistory] = useState<ChatMessage[]>([]);
 
     const socketRef = useRef<WebSocket | null>(null);
@@ -27,8 +28,8 @@ export default function Index({
     const onSubmit = useCallback(async (formData: FormData) => {
         if (socketRef.current === null) return;
 
-        const name = formData.get("name") as string;
-        const message = formData.get("message") as string;
+        const name = formData.get('name') as string;
+        const message = formData.get('message') as string;
 
         socketRef.current.send(JSON.stringify({ name, message }));
     }, []);
@@ -37,19 +38,19 @@ export default function Index({
         (e: React.ChangeEvent<HTMLInputElement>) => {
             setName(e.target.value);
         },
-        [name]
+        [],
     );
 
     useEffect(() => {
         const socket = new WebSocket(
             import.meta.env.PROD
                 ? `wss://${backendHost}/ws`
-                : `ws://${backendHost}/ws`
+                : `ws://${backendHost}/ws`,
         );
 
         socketRef.current = socket;
 
-        socket.addEventListener("message", (event) => {
+        socket.addEventListener('message', (event) => {
             const historyItem = JSON.parse(event.data) as {
                 id: string;
                 name: string;
@@ -62,7 +63,7 @@ export default function Index({
         return () => {
             socket.close();
         };
-    }, []);
+    }, [backendHost]);
 
     return (
         <main className="px-4 py-2">

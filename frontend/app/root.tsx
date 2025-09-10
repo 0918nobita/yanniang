@@ -1,4 +1,4 @@
-import React from "react";
+import type React from 'react';
 import {
     isRouteErrorResponse,
     Links,
@@ -6,9 +6,9 @@ import {
     Outlet,
     Scripts,
     ScrollRestoration,
-} from "react-router";
+} from 'react-router';
 
-import type { Route } from "./+types/root";
+import type { Route } from './+types/root';
 
 export function Layout({ children }: { children: React.ReactNode }) {
     return (

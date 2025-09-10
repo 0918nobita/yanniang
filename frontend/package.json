@@ -9,6 +9,7 @@
     "typecheck": "react-router typegen && tsc"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.2.4",
     "@cloudflare/workers-types": "4.20250905.0",
     "@tailwindcss/vite": "4.1.13",
     "@types/bun": "1.2.21",
