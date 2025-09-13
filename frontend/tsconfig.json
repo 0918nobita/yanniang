@@ -8,11 +8,7 @@
     "sourceMap": true,
     "strict": true,
     "moduleResolution": "bundler",
-    "types": [
-      "@cloudflare/workers-types/2023-07-01",
-      "@react-router/cloudflare",
-      "vite/client"
-    ],
+    "types": ["vite/client"],
     "jsx": "react-jsx",
     "paths": {
       "~/*": ["./app/*"]
@@ -20,13 +16,6 @@
     "rootDirs": [".", "./.react-router/types"],
     "noEmit": true
   },
-  "include": [
-    "app/**/*",
-    "functions/**/*",
-    "loadContext.ts",
-    "react-router.config.ts",
-    "vite.config.ts",
-    "worker-configuration.d.ts"
-  ],
+  "include": ["app/**/*", "react-router.config.ts", "vite.config.ts"],
   "exclude": ["build"]
 }

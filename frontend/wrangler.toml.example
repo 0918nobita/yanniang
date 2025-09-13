@@ -1,8 +1,0 @@
-name = "yanniang"
-compatibility_date = "2024-11-12"
-compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = "build/client"
-
-[[kv_namespaces]]
-binding = "SESSIONS"
-id = "xxxxxx"
